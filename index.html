@@ -3,70 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Text Uploader</title>
+    <title>Text Viewer</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             margin: 20px;
         }
-        textarea {
-            width: 100%;
-            height: 150px;
-            margin-bottom: 10px;
-        }
-        button {
-            padding: 10px;
-            font-size: 16px;
-            cursor: pointer;
-        }
-        #savedText {
-            margin-top: 20px;
+        #textContainer {
+            white-space: pre-wrap;
         }
     </style>
 </head>
 <body>
 
-<h1>Text Uploader</h1>
+<h1>Text Viewer</h1>
 
-<textarea id="textArea" placeholder="Enter your text here..."></textarea>
+<div id="textContainer"></div>
 
-<button onclick="saveText()">Save Text</button>
-
-<div id="savedText"></div>
-
+<!-- Load the Gist using JavaScript -->
 <script>
-    function saveText() {
-        var textContent = document.getElementById("textArea").value;
-        if (textContent.trim() !== "") {
-            var savedTexts = JSON.parse(localStorage.getItem("savedTexts")) || [];
-            savedTexts.push(textContent);
-            localStorage.setItem("savedTexts", JSON.stringify(savedTexts));
+    const gistId = 'YOUR_GIST_ID'; // Replace with your Gist ID
+    const url = `https://gist.githubusercontent.com/${gistId}/raw/text.txt`;
 
-            displaySavedTexts();
-            alert("Text saved successfully!");
-        } else {
-            alert("Please enter some text before saving.");
-        }
-    }
-
-    function displaySavedTexts() {
-        var savedTexts = JSON.parse(localStorage.getItem("savedTexts")) || [];
-        var savedTextsContainer = document.getElementById("savedText");
-        savedTextsContainer.innerHTML = "<h2>Saved Texts:</h2>";
-
-        if (savedTexts.length === 0) {
-            savedTextsContainer.innerHTML += "<p>No texts saved yet.</p>";
-        } else {
-            savedTexts.forEach(function (text, index) {
-                savedTextsContainer.innerHTML += "<p><strong>Text " + (index + 1) + ":</strong> " + text + "</p>";
-            });
-        }
-    }
-
-    // Load previously saved texts on page load
-    window.onload = function () {
-        displaySavedTexts();
-    };
+    fetch(url)
+        .then(response => response.text())
+        .then(text => {
+            document.getElementById('textContainer').innerText = text;
+        })
+        .catch(error => {
+            console.error('Error fetching Gist:', error);
+        });
 </script>
 
 </body>
